@@ -4,6 +4,8 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 import os
 import time
+import json
+from streamlit_lottie import st_lottie
 
 # ---- Load saved scaler and model ----
 scaler_path = os.path.join(os.path.dirname(__file__), "scaler.pkl")
@@ -14,6 +16,13 @@ with open(scaler_path, "rb") as f:
 
 with open(model_path, "rb") as f:
     regression = pickle.load(f)
+
+# ---- Load local Lottie animation ----
+def load_lottiefile(filepath: str):
+    with open(filepath, "r") as f:
+        return json.load(f)
+
+lottie_header = load_lottiefile("header.json")  # make sure header.json is in your project folder
 
 # ---- Page Config ----
 st.set_page_config(page_title="Diabetes Prediction", page_icon="💉", layout="wide")
@@ -57,17 +66,13 @@ body {
 </style>
 """, unsafe_allow_html=True)
 
-# ---- Header ----
-st.title("🩺 Diabetes Prediction App")
-st.write("Enter patient details below and predict the diabetes condition instantly.")
-
-# ---- Animated Input Function (optional) ----
-def animated_number_input(label, value, min_value, max_value, step=1):
-    container = st.empty()
-    for v in range(min_value, value+1, step):
-        container.number_input(label, value=v, min_value=min_value, max_value=max_value)
-        time.sleep(0.01)
-    return container.number_input(label, value=value, min_value=min_value, max_value=max_value)
+# ---- Header with Animation ----
+col1, col2 = st.columns([2,1])
+with col1:
+    st.title("🩺 Diabetes Prediction App")
+    st.write("Enter patient details below and predict the diabetes condition instantly.")
+with col2:
+    st_lottie(lottie_header, height=150, key="header_anim")
 
 # ---- Input Form ----
 st.markdown('<div class="main-card">', unsafe_allow_html=True)
@@ -105,5 +110,4 @@ if submit_button:
         st.info("✅ The model predicts: **Non-Diabetic**")
     
     st.markdown('</div>', unsafe_allow_html=True)
-
 
