@@ -76,8 +76,8 @@ col1, col2 = st.columns([2, 1])
 with col1:
     st.markdown("<h1 style='color:#003366;'>💉 Diabetes Prediction App</h1>", unsafe_allow_html=True)
     st.write("Enter patient details below and predict the diabetes condition instantly.")
-with col2:
-    st_lottie(lottie_diabetes, height=180, key="diabetes_anim2")
+# with col2:
+#     st_lottie(lottie_diabetes, height=180, key="diabetes_anim2")
 
 # ---- Form Section ----
 st.markdown('<div class="main-card">', unsafe_allow_html=True)
@@ -122,4 +122,5 @@ if submit_button:
         st.balloons()
     else:
         st.info("✅ The model predicts: **Non-Diabetic**")
+
 
