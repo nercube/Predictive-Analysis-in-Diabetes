@@ -7,11 +7,17 @@ import requests
 import time
 
 # ---- Load saved scaler and model ----
-with open("scaler.pkl", "rb") as f:
+import os
+
+scaler_path = os.path.join(os.path.dirname(__file__), "scaler.pkl")
+model_path = os.path.join(os.path.dirname(__file__), "Logistic_Regression_model.pkl")
+
+with open(scaler_path, "rb") as f:
     scaler = pickle.load(f)
 
-with open("diabetes_model.pkl", "rb") as f:
+with open(model_path, "rb") as f:
     regression = pickle.load(f)
+
 
 # ---- Load Lottie animation ----
 def load_lottieurl(url: str):
@@ -129,4 +135,5 @@ if submit_button:
             st_lottie(lottie_non_diabetic, height=200, key="anim_non_diabetic")
     
     st.markdown('</div>', unsafe_allow_html=True)
+
 
