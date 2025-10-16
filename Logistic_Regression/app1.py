@@ -2,12 +2,13 @@ import streamlit as st
 import pickle
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-import os
-import time
-import json
 from streamlit_lottie import st_lottie
+import requests
+import time
 
 # ---- Load saved scaler and model ----
+import os
+
 scaler_path = os.path.join(os.path.dirname(__file__), "scaler.pkl")
 model_path = os.path.join(os.path.dirname(__file__), "Logistic_Regression_model.pkl")
 
@@ -17,12 +18,23 @@ with open(scaler_path, "rb") as f:
 with open(model_path, "rb") as f:
     regression = pickle.load(f)
 
-# ---- Load local Lottie animation ----
-def load_lottiefile(filepath: str):
-    with open(filepath, "r") as f:
-        return json.load(f)
 
-lottie_header = load_lottiefile("header.json")  # make sure header.json is in your project folder
+# ---- Load Lottie animation ----
+def load_lottieurl(url: str):
+    try:
+        r = requests.get(url)
+        if r.status_code != 200:
+            st.error(f"❌ Couldn't load animation. Status code: {r.status_code}")
+            return None
+        return r.json()
+    except Exception as e:
+        st.error(f"⚠️ Error: {e}")
+        return None
+
+# Header and result animations
+lottie_header = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_jcikwtux.json")
+lottie_diabetic = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_o1j9vopv.json")
+lottie_non_diabetic = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json")
 
 # ---- Page Config ----
 st.set_page_config(page_title="Diabetes Prediction", page_icon="💉", layout="wide")
@@ -66,13 +78,22 @@ body {
 </style>
 """, unsafe_allow_html=True)
 
-# ---- Header with Animation ----
+# ---- Header ----
 col1, col2 = st.columns([2,1])
 with col1:
     st.title("🩺 Diabetes Prediction App")
     st.write("Enter patient details below and predict the diabetes condition instantly.")
 with col2:
-    st_lottie(lottie_header, height=150, key="header_anim")
+    if lottie_header:
+        st_lottie(lottie_header, height=150, key="header_anim")
+
+# ---- Animated Input Function ----
+def animated_number_input(label, value, min_value, max_value, step=1):
+    container = st.empty()
+    for v in range(min_value, value+1, step):
+        container.number_input(label, value=v, min_value=min_value, max_value=max_value)
+        time.sleep(0.01)
+    return container.number_input(label, value=value, min_value=min_value, max_value=max_value)
 
 # ---- Input Form ----
 st.markdown('<div class="main-card">', unsafe_allow_html=True)
@@ -106,8 +127,11 @@ if submit_button:
     
     if prediction[0] == 1:
         st.success("🩸 The model predicts: **Diabetic**")
+        if lottie_diabetic:
+            st_lottie(lottie_diabetic, height=200, key="anim_diabetic")
     else:
         st.info("✅ The model predicts: **Non-Diabetic**")
+        if lottie_non_diabetic:
+            st_lottie(lottie_non_diabetic, height=200, key="anim_non_diabetic")
     
     st.markdown('</div>', unsafe_allow_html=True)
-
