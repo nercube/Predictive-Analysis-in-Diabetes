@@ -33,7 +33,7 @@ def load_lottieurl(url: str):
 
 # Header and result animations
 lottie_header = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_jcikwtux.json")
-lottie_diabetic = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_o1j9vopv.json")
+lottie_diabetic = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_KucaRZrmYJ.json")
 lottie_non_diabetic = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json")
 
 # ---- Page Config ----
@@ -135,3 +135,4 @@ if submit_button:
             st_lottie(lottie_non_diabetic, height=200, key="anim_non_diabetic")
     
     st.markdown('</div>', unsafe_allow_html=True)
+
